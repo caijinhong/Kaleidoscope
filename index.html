@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>万花筒照片</title>
+</head>
+<body>
+    <div id="mode">
+        <img src="./imgs/1.jpg"/>
+        <img src="./imgs/2.jpg"/>
+        <img src="./imgs/3.jpg"/>
+        <img src="./imgs/4.jpg"/>
+        <img src="./imgs/5.jpg"/>
+        <img src="./imgs/6.jpg"/>
+        <img src="./imgs/7.jpg"/>
+        <img src="./imgs/8.jpg"/>
+        <img src="./imgs/9.jpg"/>
+        <img src="./imgs/10.jpg"/>
+        <img src="./imgs/11.jpg"/>
+        <img src="./imgs/12.jpg"/>
+    </div>
+</body>
+<style>
+    /* perspective 属性定义 3D 元素距视图的距离，  
+    transform-style: preserve-3d;使被转换的子元素保留其 3D 转换;
+    -webkit-box-reflect 倒影属性
+    */
+    body{
+        background: #000;
+    }
+    #mode{
+        width: 120px;
+        height: 180px;
+        margin: 150px auto 0;
+        position: relative;
+        transform-style: preserve-3d;
+        transform: perspective(800px) rotateX(-30deg) rotateY(0deg);
+        transition: all 0.5s;
+    }
+    #mode img{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px #fff;
+        -webkit-box-reflect: below 10px -webkit-linear-gradient(top,rgba(0,0,0,0) 50%,rgba(0,0,0,.5) 100%);
+        transition: all 0.5s;
+    }
+</style>
+<script>
+    var list = document.getElementsByTagName("img")
+    var mode = document.getElementById("mode")
+    var index = 0
+    var timename = setInterval("init();",1000);
+    function init(params) {
+        var element = list[index];
+        var deg = index*30>180?180-index*30:index*30
+        element.style.transform=`rotateY(${deg}deg) translateZ(300px)`
+        index++
+        if(index===list.length){
+            clearInterval(timename)
+            index = 0
+            var scale =  setInterval("rotate()",1000);
+        }
+    }
+    function rotate(params) {
+        var per = index===4?1:200*(index-4)
+        if(index<4){
+            mode.style.transform = `perspective(800px) rotateX(${-30*index}deg) rotateY(${20*index}deg)`
+        }
+        else if(per<=800){
+            mode.style.transform = `perspective(${per}px) rotateX(-30deg) rotateY(0deg)`
+        }else{
+            var deg = (index-8)*30
+            mode.style.transform = `perspective(800px) rotateX(-30deg) rotateY(${deg}deg)`
+        }
+        index++
+    }
+    // window.addEventListener()
+
+</script>
+</html>
