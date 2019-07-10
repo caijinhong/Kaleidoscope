@@ -36,7 +36,7 @@
         margin:250px auto 0;
         position: relative;
         transform-style: preserve-3d;
-        transform: perspective(800px) rotateX(-20deg) rotateY(0deg);
+        transform: perspective(800px) rotateX(-30deg) rotateY(0deg);
         transition: all 1s;
     }
     #mode img{
@@ -69,10 +69,10 @@
     function rotate(params) {
         per = index===4?1:200*(index-4)
         if(index<4){
-            mode.style.transform = `perspective(800px) rotateX(${-10*index}deg) rotateY(${20*index}deg)`
+            mode.style.transform = `perspective(800px) rotateX(${-30*index}deg) rotateY(${20*index}deg)`
         }
         else if(per<900){
-            mode.style.transform = `perspective(${per}px) rotateX(${rotateX}deg) rotateY(0deg)`
+            mode.style.transform = `perspective(${per}px) rotateX(-30deg) rotateY(0deg)`
         }else{
             rotateY = (index-8)*30
             mode.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
