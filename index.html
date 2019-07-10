@@ -37,7 +37,7 @@
         position: relative;
         transform-style: preserve-3d;
         transform: perspective(800px) rotateX(-30deg) rotateY(0deg);
-        transition: all 0.5s;
+        transition: all 1s;
     }
     #mode img{
         position: absolute;
@@ -52,7 +52,8 @@
 <script>
     var list = document.getElementsByTagName("img")
     var mode = document.getElementById("mode")
-    var index = 0
+    var index = 0,x=0,y=0,rotateY=0,rotateX=-30,scaleInterval,down,
+
     var timename = setInterval("init();",1000);
     function init(params) {
         var element = list[index];
@@ -62,7 +63,7 @@
         if(index===list.length){
             clearInterval(timename)
             index = 0
-            var scale =  setInterval("rotate()",1000);
+            scaleInterval =  setInterval("rotate()",1000);
         }
     }
     function rotate(params) {
@@ -73,12 +74,34 @@
         else if(per<=800){
             mode.style.transform = `perspective(${per}px) rotateX(-30deg) rotateY(0deg)`
         }else{
-            var deg = (index-8)*30
-            mode.style.transform = `perspective(800px) rotateX(-30deg) rotateY(${deg}deg)`
+            rotateY = (index-8)*30
+            mode.style.transform = `perspective(800px) rotateX(-30deg) rotateY(${rotateY}deg)`
         }
         index++
     }
-    // window.addEventListener()
 
+
+    document.onmousemove=function (event) {
+        if(down){
+            event = event || window.event
+            const moveX = event.clientX - x
+            const moveY = event.clientY - y
+            x=event.clientX
+            y=event.clientY
+            rotateY = moveX===0?rotateY: moveX+rotateY
+            rotateX = moveY===0?rotateX: rotateX-moveY
+            mode.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
+            clearInterval(scaleInterval)
+        }
+    }
+    document.onmousedown=function(event){
+        event = event || window.event
+        x=event.clientX
+        y=event.clientY
+        down = true
+    }
+    document.onmouseup=function(){
+        down =false
+    }
 </script>
 </html>
