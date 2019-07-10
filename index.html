@@ -52,11 +52,11 @@
 <script>
     var list = document.getElementsByTagName("img")
     var mode = document.getElementById("mode")
-    var index = 0,x=0,y=0,rotateY=0,rotateX=-30,scaleInterval,down
+    var index = 0,x=0,y=0,rotateY=0,rotateX=-30,scaleInterval,down,per
     var timename = setInterval("init();",1000);
 
     function init(params) {
-        var element = list[index];
+        var element = list[list.length-index-1];
         var deg = index*30>180?180-index*30:index*30
         element.style.transform=`rotateY(${deg}deg) translateZ(300px)`
         index++
@@ -67,11 +67,11 @@
         }
     }
     function rotate(params) {
-        var per = index===4?1:200*(index-4)
+        per = index===4?1:200*(index-4)
         if(index<4){
             mode.style.transform = `perspective(800px) rotateX(${-30*index}deg) rotateY(${20*index}deg)`
         }
-        else if(per<=800){
+        else if(per<900){
             mode.style.transform = `perspective(${per}px) rotateX(-30deg) rotateY(0deg)`
         }else{
             rotateY = (index-8)*30
@@ -95,10 +95,12 @@
         }
     }
     document.onmousedown=function(event){
-        event = event || window.event
-        x=event.clientX
-        y=event.clientY
-        down = true
+        if(per>900){
+            event = event || window.event
+            x=event.clientX
+            y=event.clientY
+            down = true
+        }
     }
     document.onmouseup=function(){
         down =false
