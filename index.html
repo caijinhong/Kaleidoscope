@@ -52,9 +52,9 @@
 <script>
     var list = document.getElementsByTagName("img")
     var mode = document.getElementById("mode")
-    var index = 0,x=0,y=0,rotateY=0,rotateX=-30,scaleInterval,down,
-
+    var index = 0,x=0,y=0,rotateY=0,rotateX=-30,scaleInterval,down
     var timename = setInterval("init();",1000);
+
     function init(params) {
         var element = list[index];
         var deg = index*30>180?180-index*30:index*30
