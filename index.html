@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>万花筒照片</title>
 </head>
+
 <body>
     <div id="mode">
-        <img src="./imgs/1.jpg"/>
-        <img src="./imgs/2.jpg"/>
-        <img src="./imgs/3.jpg"/>
-        <img src="./imgs/4.jpg"/>
-        <img src="./imgs/5.jpg"/>
-        <img src="./imgs/6.jpg"/>
-        <img src="./imgs/7.jpg"/>
-        <img src="./imgs/8.jpg"/>
-        <img src="./imgs/9.jpg"/>
-        <img src="./imgs/10.jpg"/>
-        <img src="./imgs/11.jpg"/>
-        <img src="./imgs/12.jpg"/>
+        <img src="./imgs/1.jpg" />
+        <img src="./imgs/2.jpg" />
+        <img src="./imgs/3.jpg" />
+        <img src="./imgs/4.jpg" />
+        <img src="./imgs/5.jpg" />
+        <img src="./imgs/6.jpg" />
+        <img src="./imgs/7.jpg" />
+        <img src="./imgs/8.jpg" />
+        <img src="./imgs/9.jpg" />
+        <img src="./imgs/10.jpg" />
+        <img src="./imgs/11.jpg" />
+        <img src="./imgs/12.jpg" />
     </div>
 </body>
 <style>
@@ -27,93 +29,114 @@
     transform-style: preserve-3d;使被转换的子元素保留其 3D 转换;
     -webkit-box-reflect 倒影属性
     */
-    body{
+    body {
         background: #000;
     }
-    #mode{
+
+    #mode {
         width: 120px;
         height: 180px;
-        margin:250px auto 0;
+        margin: 250px auto 0;
         position: relative;
         transform-style: preserve-3d;
         transform: perspective(800px) rotateX(-30deg) rotateY(0deg);
         transition: all 1s;
     }
-    #mode img{
+
+    #mode img {
         position: absolute;
         width: 100%;
         height: 100%;
         border-radius: 5px;
         box-shadow: 0px 0px 10px #fff;
-        -webkit-box-reflect: below 10px -webkit-linear-gradient(top,rgba(0,0,0,0) 50%,rgba(0,0,0,.5) 100%);
+        -webkit-box-reflect: below 10px -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, .5) 100%);
         transition: all 0.5s;
+        /* pointer-events: none;可以使得图片不再响应鼠标事件，从而解决 mouseup 事件失效的问题。 */
+        pointer-events: none;
     }
 </style>
 <script>
     var list = document.getElementsByTagName("img")
     var mode = document.getElementById("mode")
-    var index = 0,x=0,y=0,rotateY=0,rotateX=-10,scaleInterval,down,per
-    var timename = setInterval("init();",1000);
+    var intervalNum = 0, rotateInterval, x = 0, y = 0, rotateY = 0, rotateX = -10, down, per
 
-    function init(params) {
-        var element = list[list.length-index-1];
-        var deg = index*30>180?180-index*30:index*30
-        element.style.transform=`rotateY(${deg}deg) translateZ(300px)`
-        index++
-        if(index===list.length){
-            clearInterval(timename)
-            index = 0
-            scaleInterval =  setInterval("rotate()",1000);
+    // requestAnimationFrame 是一种用于在浏览器中进行动画循环的函数 (存在 兼容问题)
+    // requestAnimationFrame 可以在浏览器发现页面不处于激活状态时暂停动画循环，从而避免过度消耗电量
+    // requestAnimationFrame 的作用类似于 setTimeout 和 setInterval，但是更加高效和准确，适用于实时更新动画的情况
+    // handleRequestAnimationFrame()
+    // function handleRequestAnimationFrame() {
+    //     setTimeout(() => {
+    //         if (window.requestAnimationFrame) {
+    //             window.requestAnimationFrame(rotate)
+    //         } else if (window.webkitRequestAnimationFrame) {
+    //             window.webkitRequestAnimationFrame(rotate)
+    //         }
+    //     }, 1000)
+    // }
+
+    // visibilitychange 页面处于非激活状态时，清空定时器从而保证动画的正常流畅执，
+    // 原因：解决setInterval/setTimeout再此状态下处于休眠的问题（时间节点累加，在页面切换回来之后把存下来的时间节点都一次性的补回来，使得动效没有这么友好）
+    starInterval()
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+            clearInterval(rotateInterval)
+        } else {
+            starInterval()
         }
+    });
+
+
+    function starInterval() {
+        clearInterval(rotateInterval)
+        rotateInterval = setInterval("rotate();", 1000);
     }
+
     function rotate(params) {
-        per = index===4?1:200*(index-4)
-        if(index<4){
-            mode.style.transform = `perspective(800px) rotateX(${-30*index}deg) rotateY(${20*index}deg)`
+        const index = intervalNum - list.length - 1
+        // console.log('index', intervalNum, index)
+        per = index === 4 ? 1 : 200 * (index - 4)
+        if (intervalNum <= list.length - 1) {
+            let element = list[list.length - intervalNum - 1];
+            var deg = intervalNum * 30 > 180 ? 180 - intervalNum * 30 : intervalNum * 30
+            element.style.transform = `rotateY(${deg}deg) translateZ(300px)`
+        } else if (index < 4) {
+            mode.style.transform = `perspective(800px) rotateX(${-30 * index}deg) rotateY(${20 * index}deg)`
         }
-        else if(per<900){
+        else if (per < 900) {
             mode.style.transform = `perspective(${per}px) rotateX(-30deg) rotateY(0deg)`
-        }else{
-            rotateY = (index-8)*30
+        } else {
+            rotateY = (index - 8) * 30
             mode.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
         }
-        index++
+        intervalNum++
+        // handleRequestAnimationFrame()
     }
-    
-    // 绑定 visibilitychange 事件处理程序
-    document.addEventListener('visibilitychange', function (event) {
-      // 如果页面不可见，则停止定时器
-      if (document.hidden) {
-        clearInterval(scaleInterval);
-      } else {
-        // 否则重新启动定时器
-        scaleInterval = setInterval("rotate()",1000);
-      }
-    });
-    
-    document.onmousemove=function (event) {
-        if(down){
+
+    document.onmousemove = function (event) {
+        if (down) {
             event = event || window.event
             const moveX = event.clientX - x
             const moveY = event.clientY - y
-            x=event.clientX
-            y=event.clientY
-            rotateY = moveX===0?rotateY: moveX+rotateY
-            rotateX = moveY===0?rotateX: rotateX-moveY
+            x = event.clientX
+            y = event.clientY
+            rotateY = moveX === 0 ? rotateY : moveX + rotateY
+            rotateX = moveY === 0 ? rotateX : rotateX - moveY
             mode.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
-            clearInterval(scaleInterval)
+            clearInterval(rotateInterval)
         }
     }
-    document.onmousedown=function(event){
-        if(per>900){
+    document.onmousedown = function (event) {
+        if (per > 900) {
             event = event || window.event
-            x=event.clientX
-            y=event.clientY
+            x = event.clientX
+            y = event.clientY
             down = true
         }
     }
-    document.onmouseup=function(){
-        down =false
-    }
+    document.addEventListener('mouseup', () => {
+        down = false
+        starInterval()
+    })
 </script>
+
 </html>
