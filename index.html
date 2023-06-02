@@ -79,9 +79,9 @@
         }
         index++
     }
-
+    
     // 绑定 visibilitychange 事件处理程序
-    document.visibilitychange=function (event) {
+    document.addEventListener('visibilitychange', function (event) {
       // 如果页面不可见，则停止定时器
       if (document.hidden) {
         clearInterval(scaleInterval);
@@ -89,7 +89,8 @@
         // 否则重新启动定时器
         scaleInterval = setInterval("rotate()",1000);
       }
-    }
+    });
+    
     document.onmousemove=function (event) {
         if(down){
             event = event || window.event
